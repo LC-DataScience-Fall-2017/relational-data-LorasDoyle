@@ -1,0 +1,47 @@
+---
+title: "relational_data"
+author: "Brendan Doyle"
+date: "October 31, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library ("tidyverse")
+library ("nycflights13")
+```
+
+airlines
+airports
+planes
+flights
+weather
+
+### Exercises 174
+1. Use the flight table because it has the origin and dest variables. Use the airports table as well for longitude and latitude of the flight, this table as has dest and origin. Combine flights with airports to get the "origin" airport and to get to "dest" airport location.
+
+2. Their relationship is with the "origin" variable in weather and with "faa" in airports
+
+3. The year, month, day, hour, and origin in weather needs to paired with the same variable names in flight, plus dest. 
+
+4. Create a new table for special dates. The main variables would be year, month, and day and matched with the ones of flights table.
+
+###Exercises 177
+
+```{r ex 177 Q1}
+flights %>% 
+  arrange(year, month, day, sched_dep_time, carrier, flight) %>%
+  mutate(flight_surrogate = row_number()) %>%
+  glimpse()
+```
+?glimpse()
+1. above
+
+```{r ex 177 Q2}
+
+
+```
+
+2. 
+
+3. 
