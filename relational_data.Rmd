@@ -9,6 +9,12 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library ("tidyverse")
 library ("nycflights13")
+library ("Lahman")
+library ("babynames")
+library ("nasaweather")
+library ("fueleconomy")
+library ("ggplot2")
+library ("maps")
 ```
 
 airlines
@@ -37,11 +43,134 @@ flights %>%
 ?glimpse()
 1. above
 
+Lahman::Batting
+babynames::babynames
+nasaweather::atmos
+fueleconomy::vehicles
+ggplot2::diamonds
+
+
 ```{r ex 177 Q2}
+Lahman::Batting %>%
+  group_by(playerID, yearID, stint)
 
+babynames::babynames %>%
+  group_by(year, sex, name)
 
+nasaweather::atmos %>%
+  group_by(lat, long, year, month)
+
+fueleconomy::vehicles %>%
+  group_by(id)
+
+ggplot2::diamonds %>%
+  distinct() %>%
+  nrow()
 ```
 
 2. 
 
 3. 
+
+
+```{r mutating joins}
+flights2 <- flights %>%
+  select(year:day, hour, origin, dest, tailnum, carrier)
+flights2 %>%
+  select(-origin, -dest) %>%
+  left_join(airlines, by = "carrier")
+```
+
+###Exercises 186
+
+```{r ex 186 Q1}
+airports %>%
+  semi_join(flights, c("faa" = "dest")) %>%
+  ggplot(aes(lon, lat)) +
+    borders("state") +
+    geom_point() +
+    coord_quickmap()
+
+avg_dest_delays <-
+  flights %>%
+  group_by(dest) %>%
+  summarise(delay = mean(arr_delay, na.rm = TRUE)) %>%
+  inner_join(airports, by = c(dest = "faa"))
+
+avg_dest_delays %>%
+  ggplot(aes(lon, lat, colour = delay)) +
+    borders("state") +
+    geom_point() +
+    coord_quickmap()
+
+```
+1.  above
+
+
+
+2. 
+
+```{r question 2 pg187}
+flights %>%
+  left_join(airports, by = c(dest = "faa")) %>%
+  left_join(airports, by = c(origin = "faa")) %>%
+  head()
+
+```
+
+3.
+
+```{r Q3 187}
+plane_ages <- 
+  planes %>%
+  mutate(age = 2013 - year) %>%
+  select(tailnum, age)
+
+flights %>%
+  inner_join(plane_ages, by = "tailnum") %>%
+  group_by(age) %>%
+  filter(!is.na(dep_delay)) %>%
+  summarise(delay = mean(dep_delay)) %>%
+  ggplot(aes(x = age, y = delay)) +
+  geom_point() +
+  geom_line()
+
+
+```
+
+4. 
+
+```{r Q4 187}
+flight_weather <-
+  flights %>%
+  inner_join(weather, by = c("origin" = "origin",
+                            "year" = "year",
+                            "month" = "month",
+                            "day" = "day",
+                            "hour" = "hour"))
+
+flight_weather %>%
+  group_by(precip) %>%
+  summarise(delay = mean(dep_delay, na.rm = TRUE)) %>%
+  ggplot(aes(x = precip, y = delay)) +
+    geom_line() + geom_point()
+
+```
+
+5.
+```{r Q5}
+library(viridis)
+flights %>%
+  filter(year == 2013, month == 6, day == 13) %>%
+  group_by(dest) %>%
+  summarise(delay = mean(arr_delay, na.rm = TRUE)) %>%
+  inner_join(airports, by = c("dest" = "faa")) %>%
+  ggplot(aes(y = lat, x = lon, size = delay, colour = delay)) +
+  borders("state") +
+  geom_point() +
+  coord_quickmap() + 
+  scale_color_viridis()
+
+```
+
+
