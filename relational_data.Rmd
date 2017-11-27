@@ -178,11 +178,51 @@ flights %>%
 ### Filtering Joins
 
 
+1. MQ and AA don't report their tail numbers like other carriers which means the count is repeated more often. 
+
+```{r exercise 191 q1}
+flights %>%
+  anti_join(planes, by = "tailnum") %>%
+  count(carrier, sort = TRUE)
+```
 
 
+2.
+
+```{r pg 191 Q2}
+ 
+flights_100<- 
+  
+  filter(flights) %>%
+  group_by(tailnum) %>%
+  count() %>%
+  filter(n > 100)
+
+flights %>%
+  semi_join(flights_100, by = "tailnum")
+```
+
+3. It shows the vehicles by their make and model.
+
+```{r pg191 Q3}
+glimpse(fueleconomy::vehicles)
+
+glimpse(fueleconomy::common)
 
 
+fueleconomy::vehicles %>%
+  semi_join(fueleconomy::common, by = c("make", "model"))
 
+```
+
+4. ? 
+
+5. 
+anti_join(flights, airports, by = c("dest" = "faa"))  tells you the flights that go to an airport that ARE NOT on the faa distinations list. 
+
+anti_join(airports, flights, by = c("faa" = "dest")) tells you the airports that don't have flights from a specific destination.
+
+6. Planes can be sold to or acquried by other airlines. 
 
 
 
