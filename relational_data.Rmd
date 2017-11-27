@@ -15,6 +15,7 @@ library ("nasaweather")
 library ("fueleconomy")
 library ("ggplot2")
 library ("maps")
+library ("viridis")
 ```
 
 airlines
@@ -68,10 +69,9 @@ ggplot2::diamonds %>%
   nrow()
 ```
 
-2. 
+2. above
 
-3. 
-
+3. primary key of "playerID, yearID, stint", for Batting and the foreign key of "playerID" can join with the same named primary key in Master table. Salaries table shares a primary key of PlayerID with Batting and Master, and a primary key of yearID and teamID with the primary keys of Managers. Then managers table shares the same primary key with AwardsManagers table with yearID and playerID. 
 
 ```{r mutating joins}
 flights2 <- flights %>%
@@ -118,7 +118,7 @@ flights %>%
 
 ```
 
-3.
+3. There doesn't appear to be a relationship between age of a plane and its delays as should by the graph below. 
 
 ```{r Q3 187}
 plane_ages <- 
@@ -131,14 +131,14 @@ flights %>%
   group_by(age) %>%
   filter(!is.na(dep_delay)) %>%
   summarise(delay = mean(dep_delay)) %>%
-  ggplot(aes(x = age, y = delay)) +
+  ggplot(aes(x = delay, y = age)) +
   geom_point() +
   geom_line()
 
 
 ```
 
-4. 
+4. The weather conditions, specifically rain precipitation relates to a delay. However you would expect most of a delay with more precipitation but it is strongest with around 0.2 because it is probably more likely to rain that amount more often at 1.2 as shown by the amount of plotted points.
 
 ```{r Q4 187}
 flight_weather <-
@@ -157,9 +157,11 @@ flight_weather %>%
 
 ```
 
-5.
+5. Google showed that the southeast has a lot of visible weather conditions, specifically storms. The yellow indicates where the biggest delay was which based on the latitude and longitude is 35 (ish) degrees and -85 degrees, respectively. It looks like on the map that it is in Tennessee.
 ```{r Q5}
 library(viridis)
+
+
 flights %>%
   filter(year == 2013, month == 6, day == 13) %>%
   group_by(dest) %>%
@@ -168,9 +170,20 @@ flights %>%
   ggplot(aes(y = lat, x = lon, size = delay, colour = delay)) +
   borders("state") +
   geom_point() +
-  coord_quickmap() + 
+  coord_quickmap()  + 
   scale_color_viridis()
 
 ```
+
+### Filtering Joins
+
+
+
+
+
+
+
+
+
 
 
